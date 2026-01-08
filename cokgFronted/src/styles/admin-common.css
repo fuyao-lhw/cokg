@@ -1,0 +1,120 @@
+/* src/styles/admin-common.css */
+/* 管理页面通用容器样式 */
+.admin-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    padding: 20px;
+}
+
+/* 表格上方的按钮容器 */
+.table-header {
+    padding: 0 0 20px 0;
+    display: flex;
+    justify-content: flex-start;
+}
+
+/* 添加按钮样式 */
+.add-button {
+    background-color: #409eff;
+    border-color: #409eff;
+    color: white;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(64, 158, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.add-button:hover {
+    background-color: #66b1ff;
+    border-color: #66b1ff;
+    box-shadow: 0 4px 8px rgba(64, 158, 255, 0.4);
+    transform: translateY(-1px);
+}
+
+/* 表格样式 */
+.admin-table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.admin-table :deep(.el-table th) {
+    background-color: #f8f9fa !important;
+    color: #333;
+    font-weight: 600;
+}
+
+/* 操作按钮样式 */
+.action-button {
+    margin-right: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #e6a23c;
+    border-color: #e6a23c;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #ebb563;
+    border-color: #ebb563;
+    transform: scale(1.05);
+}
+
+.delete-btn {
+    background-color: #f56c6c;
+    border-color: #f56c6c;
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #f78989;
+    border-color: #f78989;
+    transform: scale(1.05);
+}
+
+/* 对话框底部按钮容器 */
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding-top: 20px;
+}
+
+/* 对话框按钮基础样式 */
+.dialog-btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn {
+    background-color: #dcdfe6;
+    border-color: #dcdfe6;
+    color: #606266;
+}
+
+.cancel-btn:hover {
+    background-color: #e6e8f0;
+    border-color: #e6e8f0;
+    color: #40444f;
+}
+
+.confirm-btn {
+    background-color: #67c23a;
+    border-color: #67c23a;
+    color: white;
+}
+
+.confirm-btn:hover {
+    background-color: #85ce61;
+    border-color: #85ce61;
+    box-shadow: 0 4px 8px rgba(103, 194, 58, 0.3);
+}
