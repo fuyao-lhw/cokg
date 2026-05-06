@@ -1,4 +1,4 @@
-package com.norway.cokgbackend.mapper.entity;
+package com.norway.cokgbackend.mapper.entity.knowledge;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -23,11 +23,12 @@ public class KnowledgeMetaEntity {
 
     @TableId(type = IdType.AUTO)
     private Long kgMetaId;
-
     private String kgName;
     private Integer kgType;
     private Long deptId;
+    private Long createUserId;
     private LocalDateTime createTime;
+    private LocalDateTime updateTime;
     private Integer isDeleted;
 
 

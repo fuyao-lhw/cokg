@@ -84,6 +84,13 @@ public class JWTUtil {
 
     }
 
+    /**
+     * 获取JWT信息
+     * */
+//    public JWTResult getJWTInfo(String token) {
+//        return verifyToken(token);
+//    }
+
 }
 
 

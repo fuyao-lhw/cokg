@@ -33,6 +33,10 @@ public class Result {
         return new Result(ResultCodeEnum.SUCCESS.getCode(), ResultCodeEnum.SUCCESS.getMsg(), data);
     }
 
+    public static Result success(){
+        return new Result(ResultCodeEnum.SUCCESS.getCode(), ResultCodeEnum.SUCCESS.getMsg(), new ArrayList<>());
+    }
+
     public static Result fail(String msg){
         String Msg = msg == null ? ResultCodeEnum.FAIL.getMsg() : msg;
         return new Result(ResultCodeEnum.FAIL.getCode(), Msg, null);

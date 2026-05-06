@@ -8,3 +8,6 @@ spring:
 jwt:
   issuer: "cokg"
   secret: "norway"
+
+node:
+  coefficient: 10

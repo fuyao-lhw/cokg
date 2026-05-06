@@ -8,8 +8,11 @@ import com.norway.cokgbackend.mapper.DeptMapper;
 import com.norway.cokgbackend.mapper.UserMapper;
 import com.norway.cokgbackend.mapper.entity.DeptEntity;
 import com.norway.cokgbackend.mapper.entity.UserEntity;
+import com.norway.cokgbackend.mapper.entity.knowledge.KnowledgeShareEntity;
+import com.norway.cokgbackend.mapper.knowledge.KnowledgeShareMapper;
 import com.norway.cokgbackend.model.JWTResult;
-import com.norway.cokgbackend.model.params.AddUserParam;
+import com.norway.cokgbackend.model.params.PermissionParam;
+import com.norway.cokgbackend.model.params.UserParam;
 import com.norway.cokgbackend.model.params.JWTParam;
 import com.norway.cokgbackend.model.params.LoginParam;
 import com.norway.cokgbackend.model.Result;
@@ -19,7 +22,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @Description: TODO
@@ -39,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JWTUtil jwtUtil;
+
+    @Autowired
+    private KnowledgeShareMapper knowledgeShareMapper;
 
 
 
@@ -74,7 +82,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result addUser(AddUserParam addUserParam) {
+    public Result addUser(UserParam.AddUserParam addUserParam) {
         // 校验参数
         // 用户是否已经在数据库中
         // 校验用户名是否重复
@@ -157,5 +165,60 @@ public class UserServiceImpl implements UserService {
 
         return new Result(ResultCodeEnum.SUCCESS.getCode(), "权限校验成功,用户角色为: 管理员", null);
 
+    }
+
+    @Override
+    public Result distribute(List<PermissionParam> permissionParam) {
+        for (PermissionParam item : permissionParam){
+            for (Long kgMetaId : item.getKgMetaIds()){
+                KnowledgeShareEntity knowledgeShareEntity = knowledgeShareMapper.selectOne(
+                        new QueryWrapper<KnowledgeShareEntity>()
+                        .eq("kg_share_id", item.getUserId())
+                        .eq("kg_id", kgMetaId)
+                );
+                if (knowledgeShareEntity != null){
+                    continue;
+                }
+                KnowledgeShareEntity addKnowledgeShareEntity = new KnowledgeShareEntity();
+                addKnowledgeShareEntity.setShareUserId(item.getUserId());
+                addKnowledgeShareEntity.setKgId(kgMetaId);
+                addKnowledgeShareEntity.setPermission(0);
+                addKnowledgeShareEntity.setCreateTime(LocalDateTime.now());
+                knowledgeShareMapper.insert(addKnowledgeShareEntity);
+            }
+        }
+
+        return Result.success();
+    }
+
+    @Override
+    public Result getUserShareKg() {
+
+        List<UserEntity> userEntity = userMapper.selectList(
+                new QueryWrapper<UserEntity>()
+                        .select("user_id")
+        );
+
+        List<Map<String, Object>> userShareKgList = new ArrayList<>();
+
+        userEntity.forEach(item -> {
+            Long userId = item.getUserId();
+            UserEntity user = userMapper.selectOne(
+                    new QueryWrapper<UserEntity>()
+                            .eq("user_id", userId)
+            );
+            Map<String, Object> userShareMap = new HashMap<>();
+            userShareMap.put("userId", userId);
+            userShareMap.put("userCode", user.getCode());
+            userShareMap.put("userName", user.getName());
+            userShareMap.put("originalKgIds", knowledgeShareMapper.selectList(
+                    new QueryWrapper<KnowledgeShareEntity>()
+                            .eq("share_user_id", userId)
+            ).stream().map(KnowledgeShareEntity::getKgId).toList());
+            userShareKgList.add(userShareMap);
+        });
+
+
+        return Result.success(userShareKgList);
     }
 }

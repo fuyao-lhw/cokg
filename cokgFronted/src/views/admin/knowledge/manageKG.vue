@@ -10,7 +10,19 @@
       >
         添加知识图谱
       </el-button>
+      <el-button
+      type="primary"
+      @click="openBatchDialog"
+      :icon="Upload">
+        批量导入
+      </el-button>
     </div>
+
+    <BatchAddFileDialog 
+    v-model:visible="batchDialogVisible" 
+    title="批量导入知识/实体"
+    @submit="handleSubmitFile"
+    />
 
     <el-table
       :data="kgList"
@@ -19,12 +31,13 @@
       class="admin-table"
     >
       <el-table-column
-        prop="kgId"
+        prop="kgMetaId"
         label="ID"
         width="80"
         sortable
-      ></el-table-column>
-      <el-table-column prop="name" label="名称" width="150"></el-table-column>
+      >
+    </el-table-column>
+      <el-table-column prop="kgName" label="名称" width="150"></el-table-column>
       <!-- <el-table-column prop="description" label="描述" width="200"></el-table-column> -->
       <el-table-column
         prop="createTime"
@@ -36,17 +49,32 @@
         label="更新时间"
         width="150"
       ></el-table-column>
+      <el-table-column label="创建人" prop="createUserId"></el-table-column>
+      <el-table-column label="图谱类型" prop="kgType">
+        <template #default="{ row }">
+          {{ row.kgType === 0 ? "个人" : "部门" }}
+        </template>
+      </el-table-column>
+      <el-table-column label="所属部门" prop="deptId"></el-table-column>
       <!-- 操作列 -->
       <el-table-column label="操作" width="200">
         <template #default="{ row }">
           <el-button
             type="danger"
             size="small"
-            @click="deleteKG(row.kgId)"
+            @click="handleDeleteKG(row.kgMetaId)"
             :icon="Delete"
             class="action-button delete-btn"
           >
             删除
+          </el-button>
+          <el-button
+            type="primary"
+            @click="openEditKGDialog(row)"
+            :icon="Edit"
+            class="action-button edit-btn"
+          >
+            编辑
           </el-button>
         </template>
       </el-table-column>
@@ -54,7 +82,7 @@
 
     <el-dialog
       v-model="addKGVisible"
-      title="添加知识图谱"
+      :title="addOrUpdate === 'add' ? '添加知识图谱' : '编辑知识图谱'"
       width="800"
       class="kg-dialog"
     >
@@ -76,13 +104,16 @@
             </template>
           </el-input>
         </el-form-item>
-        <!-- <el-form-item label="描述:">
-          <el-input 
-            v-model="addKGForm.description" 
-            type="textarea"
-            :rows="3"
-          ></el-input>
-        </el-form-item> -->
+        <el-form-item v-if="addOrUpdate === 'update'" label="所属部门">
+          <el-select placeholder="请选择部门" v-model="addKGForm.deptId">
+            <el-option
+              v-for="item in deptOptions"
+              :key="item.value"
+              :value="item.value"
+              :label="item.label"
+            ></el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -104,25 +135,80 @@
 </template>
 
 <script setup lang="ts">
-import { getKGList, deleteKG, addKG } from "@/utils/kgUtil";
+import { getKGList, deleteKG, addKG, updateKG, batchAddKg} from "@/utils/kgUtil";
+import { getDeptList } from "@/utils/deptUtil";
 import { onMounted, ref } from "vue";
-import { Plus, Delete, Check } from "@element-plus/icons-vue";
+import { Plus, Delete, Check, Edit, Upload } from "@element-plus/icons-vue";
 import { ElMessageBox } from "element-plus";
-import { type KGItem, submitKGForm } from "@/interface/knowledgeInter";
+import {
+  type KGItem,
+  type submitKGForm,
+  type updateKGForm,
+} from "@/interface/knowledgeInter";
+import { type options } from "@/interface/optionsInter";
+import type { DeptItem } from "@/interface/deptInter";
+import BatchAddFileDialog from "@/component/dialog/BatchAddFileDialog.vue";
 
 const kgList = ref<KGItem[]>([]);
 
 const addKGVisible = ref(false);
+const addOrUpdate = ref("add");
+const batchDialogVisible = ref(false);
+
+const updateKGForm = ref<updateKGForm>({
+  kgMetaId: null,
+  kgName: "",
+  kgType: null,
+  deptId: null,
+
+});
 
 const addKGForm = ref<submitKGForm>({
   kgName: "",
   kgType: 1,
-  deptId: "",
+  deptId: -1,
   createUserCode: localStorage.getItem("code"),
 });
 
+const deptOptions = ref<options[]>([]);
+
+
+function openBatchDialog() {
+  batchDialogVisible.value = true;
+}
 function openAddKGDialog() {
+  addOrUpdate.value = "add";
   addKGVisible.value = true;
+}
+
+async function openEditKGDialog(row: KGItem) {
+  addOrUpdate.value = "update";
+  addKGVisible.value = true;
+
+  console.log("当前值:", row);
+
+  await loadDeptOptions();
+
+  // 设置当前值
+  addKGForm.value = {
+    kgName: row.kgName,
+    kgType: row.kgType,
+    deptId: row.deptId,
+    createUserCode: localStorage.getItem("code"),
+  };
+  updateKGForm.value.kgMetaId = row.kgMetaId;
+}
+
+async function loadDeptOptions() {
+  try {
+    const deptListData = await getDeptList();
+    deptOptions.value = deptListData.data.map((dept: DeptItem) => ({
+      value: dept.deptId,
+      label: `${dept.deptId}(${dept.name})`,
+    }));
+  } catch (error) {
+    console.error("加载部门选项失败:", error);
+  }
 }
 
 function closeKGDialog() {
@@ -130,7 +216,7 @@ function closeKGDialog() {
   addKGForm.value = {
     kgName: "",
     kgType: 1,
-    deptId: "",
+    deptId: 1,
     createUserCode: localStorage.getItem("code"),
   };
 }
@@ -138,8 +224,18 @@ function closeKGDialog() {
 async function handleSaveKG() {
   try {
     addKGVisible.value = false;
+
+    updateKGForm.value.kgName = addKGForm.value.kgName;
+    updateKGForm.value.kgType = addKGForm.value.kgType;
+    updateKGForm.value.deptId = addKGForm.value.deptId;
+
     // 添加知识图谱
-    await addKG(addKGForm.value);
+    if (addOrUpdate.value === "add") {
+      await addKG(addKGForm.value);
+    } else if (addOrUpdate.value === "update") {
+      // 更新知识图谱
+      await updateKG(updateKGForm.value);
+    }
 
     // 刷新知识图谱列表
     const kgListData = await getKGList();
@@ -149,24 +245,42 @@ async function handleSaveKG() {
   }
 }
 
-async function deleteKG(kgId: string) {
+async function handleDeleteKG(kgMetaId: number) {
   try {
-    // 确认删除
-    await ElMessageBox.confirm("确定要删除这个知识图谱吗？", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    });
+    console.log("删除知识图谱:", kgMetaId, typeof kgMetaId);
+    const res = await deleteKG(kgMetaId);
 
-    // 执行删除
-    await deleteKG(kgId);
+    if (res.code !== 200) {
+      ElMessageBox.alert(res.message, "错误", {
+        confirmButtonText: "确定",
+        type: "error",
+      });
+    }
+
 
     // 刷新列表
     const kgListData = await getKGList();
-    kgList.value = kgListData.data;
+    kgList.value = kgListData;
   } catch (error) {
     console.error("删除知识图谱失败:", error);
   }
+}
+
+async function handleSubmitFile(file: File) {
+  const formData = new FormData();
+
+  formData.append("file", file);
+  formData.append("funcType", "kg");
+  formData.append("userCode", localStorage.getItem("code") || "10001");
+
+  await ElMessageBox.alert("上传成功", "提示", {
+    confirmButtonText: "确定",
+    type: "success",
+  });
+  await batchAddKg(formData);
+
+  window.location.reload();
+  
 }
 
 onMounted(async () => {
@@ -174,7 +288,7 @@ onMounted(async () => {
     // 获取知识图谱列表
     const kgListData = await getKGList();
     kgList.value = kgListData.data;
-    console.log("知识图谱列表:", kgListData.data);
+    console.log("知识图谱列表:", kgListData);
   } catch (error) {
     console.error("获取知识图谱列表失败:", error);
   }

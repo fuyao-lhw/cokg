@@ -1,5 +1,5 @@
 interface DeptItem {
-    id: string | number;
+    deptId: string | number;
     name: string;
 }
 

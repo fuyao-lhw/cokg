@@ -22,6 +22,13 @@
                 >
               </template>
             </el-menu-item>
+            <el-menu-item index="/permission/distribution">
+              <template #title>
+                <RouterLink to="/admin/permission/distribution" class="link">
+                  权限管理
+                </RouterLink>
+              </template>
+            </el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="/knowledgeManage">
             <template #title>
@@ -34,13 +41,21 @@
                 >
               </template>
             </el-menu-item>
-            <el-menu-item>
+            <el-menu-item index="/knowledge/manageEntity">
               <template #title>
-                <RouterLink to="/admin/knowledge/manageEntity" class="link"
-                  >实体管理</RouterLink
+                <RouterLink to="/admin/knowledge/manageNode" class="link"
+                  >节点（实体）管理</RouterLink
                 >
               </template>
             </el-menu-item>
+            <el-menu-item index="/knowledge/manageRelation">
+              <template #title>
+                <RouterLink to="/admin/knowledge/manageRelation" class="link"
+                  >节点（实体）关系管理</RouterLink
+                >
+              </template>
+            </el-menu-item>
+            
           </el-sub-menu>
         </el-menu>
       </el-aside>

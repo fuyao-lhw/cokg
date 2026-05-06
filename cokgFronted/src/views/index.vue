@@ -2,6 +2,7 @@
 <template>
   <div class="index-container">
     <el-container>
+      <!-- 头部 -->
       <el-header class="header">
         <!-- i am index header -->
         <!-- <router-link to="/login">登录</router-link> -->
@@ -12,14 +13,48 @@
             <span>去首页</span>
           </div>
         </router-link>
+        <router-link to="/test">
+          <div class="toIndex">
+            <el-icon><HomeFilled /></el-icon>
+            <span>测试</span>
+          </div>
+        </router-link>
         <div class="header-right">
           <el-button @click="handleAdminClick">管理员控制台</el-button>
           <userShow />
         </div>
       </el-header>
+      <!-- 主体 -->
       <el-main class="main">
         <!-- i am index main -->
-        <router-view></router-view>
+        <router-view v-if="dealIndexShow().startsWith('/admin')"></router-view>
+        <el-container class="indexComponent" v-else>
+          <!-- 侧边栏 -->
+          <el-aside class="aside">
+            <el-menu class="aside-menu">
+              <el-sub-menu index="/graph">
+                <template #title>
+                  <el-icon><Graph /></el-icon>
+                  <span class="aside-title">
+                    <router-link to="/graph">图谱</router-link>
+                  </span>
+                </template>
+                <el-menu-item>
+                  <template #title>
+                    <el-icon><Memo /></el-icon>
+                    <span>
+                      <router-link to="/graph/list">所有图谱</router-link>
+                    </span>
+                  </template>
+                </el-menu-item>
+              </el-sub-menu>
+            </el-menu>
+          </el-aside>
+          <el-main class="main-content">
+            <!-- i am index main content -->
+            <router-view></router-view>
+          </el-main>
+        </el-container>
       </el-main>
     </el-container>
   </div>
@@ -31,6 +66,11 @@ import UserShow from "./user/userShow.vue";
 import axios from "axios";
 import router from "@/router";
 import { ElMessage } from "element-plus";
+import { onMounted, ref } from "vue";
+
+function dealIndexShow() {
+  return router.currentRoute.value.fullPath;
+}
 
 async function handleAdminClick() {
   console.log("校验权限");
@@ -60,6 +100,8 @@ async function handleAdminClick() {
     // 跳转到登录页面
     router.push("/index");
   }
+
+  onMounted(() => {});
 }
 </script>
 
@@ -106,5 +148,17 @@ async function handleAdminClick() {
 .toIndex span {
   font-size: 17px; /* 文字大小 */
   white-space: nowrap; /* 防止文字换行 */
+}
+
+.aside a {
+  color: black;
+}
+
+.aside-title {
+  font-size: 30px;
+}
+
+.aside a:not(.aside-title a) {
+  font-size: 20px;
 }
 </style>

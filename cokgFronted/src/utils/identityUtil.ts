@@ -19,8 +19,8 @@ async function submitLogin(code: string, password: string) {
         duration: 3000,
     });
     localStorage.setItem("token", res.data.data.token);
-    localStorage.setItem("name", JSON.stringify(res.data.data.name));
-    localStorage.setItem("code", JSON.stringify(res.data.data.code));
+    localStorage.setItem("name", res.data.data.name);
+    localStorage.setItem("code", res.data.data.code);
     router.push("/index");
 }
 

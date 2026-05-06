@@ -1,5 +1,7 @@
 package com.norway.cokgbackend.interceptor;
 
+import com.auth0.jwt.interfaces.Claim;
+import com.norway.cokgbackend.model.JWTResult;
 import com.norway.cokgbackend.model.Result;
 import com.norway.cokgbackend.utils.JWTUtil;
 import com.norway.cokgbackend.utils.JsonUtil;
@@ -8,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.util.Map;
 
 /**
  * @Description: TODO
@@ -54,11 +58,12 @@ public class AuthControlInterceptor implements HandlerInterceptor {
             response.getWriter().write(JsonUtil.bean2JsonByJackson(Result.noAuth(null)));
             return false; // 拦截请求
         }
-//
-//        // 3. 令牌有效：可将用户信息存入 Request 域，供 Controller 使用
-//        Long userId = jwtUtil.getUserIdFromToken(token);
-//        request.setAttribute("userId", userId);
-//        request.setAttribute("username", jwtUtil.getUsernameFromToken(token));
+
+        // 3. 令牌有效：可将用户信息存入 Request 域，供 Controller 使用
+        JWTResult jwtResult = jwtUtil.verifyToken(token);
+        Map<String, Claim> claims = jwtResult.getData().getClaims();
+        log.info("jwtResultData: {}", claims);
+        request.setAttribute("claims", claims);
 
         return true; // 放行请求
     }

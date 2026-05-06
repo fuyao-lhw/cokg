@@ -6,7 +6,11 @@ import ManageUser from "@/views/admin/user/manageUser.vue";
 import Test from "@/views/test.vue";
 import ManageDept from "@/views/admin/dept/manageDept.vue";
 import ManageKG from "@/views/admin/knowledge/manageKG.vue";
-import ManageEntity from "@/views/admin/knowledge/manageEntity.vue";
+import ManageRelation from "@/views/admin/knowledge/manageRelation.vue";
+import ManageNode from "@/views/admin/knowledge/manageNode.vue";
+import GraphList from "@/views/graph/List.vue";
+import GraphDetail from "@/views/graph/Detail.vue";
+import ManagePermission from "@/views/admin/user/managePermission.vue";
 
 
 
@@ -34,12 +38,36 @@ const router = createRouter({
                             component: ManageDept,
                         },
                         {
+                            path: "/admin/permission/distribution",
+                            component: ManagePermission,
+                        },
+                        {
                             path: "/admin/knowledge/manageKG",
                             component: ManageKG,
                         },
                         {
-                            path: "/admin/knowledge/manageEntity",
-                            component: ManageEntity,
+                            path: "/admin/knowledge/manageNode",
+                            component: ManageNode,
+                        },
+                        {
+                            path: "/admin/knowledge/manageRelation",
+                            component: ManageRelation,
+                        },
+
+                    ]
+                },
+                {
+                    path: "/graph",
+                    redirect: "/graph/list",
+                    children: [
+                        {
+                            path: "/graph/list",
+                            component: GraphList,
+                        },
+                        {
+                            path: "/graph/:graphId",
+                            component: GraphDetail,
+                            props: true
                         },
                     ]
                 },
@@ -53,10 +81,7 @@ const router = createRouter({
             path: "/test",
             component: Test,
         },
-        // {
-        //     path: "/admin",
-        //     component: Admin,
-        // },
+
     ],
 });
 

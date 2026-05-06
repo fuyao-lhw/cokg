@@ -120,8 +120,6 @@ const currentDeptId = ref<string | number | null>(null);
 // 部门表单数据
 const deptForm = ref({
   name: "",
-//   code: "",
-//   description: "",
 });
 
 // 表单验证规则
@@ -145,8 +143,6 @@ function openAddDeptDialog() {
   currentDeptId.value = null;
   deptForm.value = {
     name: "",
-    // code: "",
-    // description: "",
   };
   addDeptVisible.value = true;
 }
@@ -157,8 +153,6 @@ function openEditDeptDialog(dept: DeptItem) {
   currentDeptId.value = dept.deptId;
   deptForm.value = {
     name: dept.name || "",
-    // code: dept.code || "",
-    // description: dept.description || "",
   };
   addDeptVisible.value = true;
 }

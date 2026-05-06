@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getByAuth } from "@/utils/requestUtil";
 import { type addUserItem } from "@/interface/userInter";
 
 // 获取用户列表
@@ -33,4 +34,9 @@ async function deleteUser(id) {
 
 }
 
-export { getUserList, deleteUser, addUser };
+async function getUserPermissions() {
+    const res = await getByAuth('/api/user/permission/user_share', localStorage.getItem("token"))
+    return res.data;
+}
+
+export { getUserList, deleteUser, addUser, getUserPermissions };

@@ -34,7 +34,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns( // 排除不需要拦截的请求
                         "/user/login", // 登录接口
                         "/user/register", // 注册接口
-                        "/user/check_auth" // 校验权限接口
+                        "/user/check_auth", // 校验权限接口
+                        "/graph/**"  // 所有图数据接口
                 );
     }
 
