@@ -20,8 +20,8 @@
 
     <BatchAddFileDialog 
     v-model:visible="batchDialogVisible" 
-    title="批量导入知识/实体"
-    @submit="handleSubmitFile"
+    title="批量导入知识图谱"
+    @submit="(files) => handleSubmitFile(files, 'kg')"
     />
 
     <el-table
@@ -135,7 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { getKGList, deleteKG, addKG, updateKG, batchAddKg} from "@/utils/kgUtil";
+import { getKGList, deleteKG, addKG, updateKG} from "@/utils/kgUtil";
 import { getDeptList } from "@/utils/deptUtil";
 import { onMounted, ref } from "vue";
 import { Plus, Delete, Check, Edit, Upload } from "@element-plus/icons-vue";
@@ -148,6 +148,7 @@ import {
 import { type options } from "@/interface/optionsInter";
 import type { DeptItem } from "@/interface/deptInter";
 import BatchAddFileDialog from "@/component/dialog/BatchAddFileDialog.vue";
+import { handleSubmitFile } from "@/utils/fileUtil";
 
 const kgList = ref<KGItem[]>([]);
 
@@ -266,22 +267,22 @@ async function handleDeleteKG(kgMetaId: number) {
   }
 }
 
-async function handleSubmitFile(file: File) {
-  const formData = new FormData();
+// async function handleSubmitFile(file: File) {
+//   const formData = new FormData();
 
-  formData.append("file", file);
-  formData.append("funcType", "kg");
-  formData.append("userCode", localStorage.getItem("code") || "10001");
+//   formData.append("file", file);
+//   formData.append("funcType", "kg");
+//   formData.append("userCode", localStorage.getItem("code") || "10001");
 
-  await ElMessageBox.alert("上传成功", "提示", {
-    confirmButtonText: "确定",
-    type: "success",
-  });
-  await batchAddKg(formData);
+//   await ElMessageBox.alert("上传成功", "提示", {
+//     confirmButtonText: "确定",
+//     type: "success",
+//   });
+//   await batchAdd(formData);
 
-  window.location.reload();
+//   window.location.reload();
   
-}
+// }
 
 onMounted(async () => {
   try {

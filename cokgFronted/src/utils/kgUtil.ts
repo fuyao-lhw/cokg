@@ -97,7 +97,7 @@ async function getRelationList(kgMetaId: number) {
 
 }
 
-async function batchAddKg(formData: FormData) {
+async function batchAdd(formData: FormData) {
     return await uploadFile(`/api/file/upload`,
         localStorage.getItem("token"),
         formData
@@ -106,5 +106,5 @@ async function batchAddKg(formData: FormData) {
 
 export {
     getKGList, deleteKG, addKG, addRelation, deleteRelation, updateRelation, getRelationList, getNodeList, deleteNode, addNode,
-    updateKG, updateNode, batchGetKGList, batchGetNodeList, batchAddKg
+    updateKG, updateNode, batchGetKGList, batchGetNodeList, batchAdd
 }

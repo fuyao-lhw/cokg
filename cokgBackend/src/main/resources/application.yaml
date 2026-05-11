@@ -10,4 +10,4 @@ jwt:
   secret: "norway"
 
 node:
-  coefficient: 10
+  coefficient: 1

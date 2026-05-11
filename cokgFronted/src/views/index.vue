@@ -13,12 +13,12 @@
             <span>去首页</span>
           </div>
         </router-link>
-        <router-link to="/test">
+        <!-- <router-link to="/test">
           <div class="toIndex">
             <el-icon><HomeFilled /></el-icon>
             <span>测试</span>
           </div>
-        </router-link>
+        </router-link> -->
         <div class="header-right">
           <el-button @click="handleAdminClick">管理员控制台</el-button>
           <userShow />

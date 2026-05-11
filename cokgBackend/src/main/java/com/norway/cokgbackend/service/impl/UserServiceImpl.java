@@ -49,7 +49,6 @@ public class UserServiceImpl implements UserService {
     private KnowledgeShareMapper knowledgeShareMapper;
 
 
-
     @Override
     public Result login(LoginParam loginParam) {
         // 校验参数
@@ -169,14 +168,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result distribute(List<PermissionParam> permissionParam) {
-        for (PermissionParam item : permissionParam){
-            for (Long kgMetaId : item.getKgMetaIds()){
+        for (PermissionParam item : permissionParam) {
+            for (Long kgMetaId : item.getKgMetaIds()) {
                 KnowledgeShareEntity knowledgeShareEntity = knowledgeShareMapper.selectOne(
                         new QueryWrapper<KnowledgeShareEntity>()
-                        .eq("kg_share_id", item.getUserId())
-                        .eq("kg_id", kgMetaId)
+                                .eq("kg_share_id", item.getUserId())
+                                .eq("kg_id", kgMetaId)
                 );
-                if (knowledgeShareEntity != null){
+                if (knowledgeShareEntity != null) {
+                    continue;
+                }
+                KnowledgeShareEntity existShare = knowledgeShareMapper.selectOne(
+                        new QueryWrapper<KnowledgeShareEntity>()
+                                .eq("kg_id", kgMetaId)
+                                .eq("share_user_id", item.getUserId())
+                );
+                if (existShare == null) {
+                    log.info("图谱：{}，可见用户：{} -- 已经加入过分享表", kgMetaId, item.getUserId());
                     continue;
                 }
                 KnowledgeShareEntity addKnowledgeShareEntity = new KnowledgeShareEntity();
