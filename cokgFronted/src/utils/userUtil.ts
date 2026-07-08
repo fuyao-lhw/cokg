@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getByAuth } from "@/utils/requestUtil";
+import { getByAuth, postByAuth } from "@/utils/requestUtil";
 import { type addUserItem } from "@/interface/userInter";
 
 // 获取用户列表
@@ -18,7 +18,7 @@ async function getUserList() {
 // 添加用户
 async function addUser(data: addUserItem) {
 
-    const res = await axios.post("/api/user/add", data);
+    const res = await postByAuth('/api/user/add', localStorage.getItem("token"), data);
 
     console.log("添加用户成功", res.data);
 

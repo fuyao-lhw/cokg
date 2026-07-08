@@ -11,6 +11,8 @@ import ManageNode from "@/views/admin/knowledge/manageNode.vue";
 import GraphList from "@/views/graph/List.vue";
 import GraphDetail from "@/views/graph/Detail.vue";
 import ManagePermission from "@/views/admin/user/managePermission.vue";
+import aiChat from "@/views/ai/chat.vue"
+import getEntity from "@/views/ai/getEntity.vue";
 
 
 
@@ -68,6 +70,20 @@ const router = createRouter({
                             path: "/graph/:graphId",
                             component: GraphDetail,
                             props: true
+                        },
+                    ]
+                },
+                {
+                    path: "/ai",
+                    redirect: "/ai/chat",
+                    children: [
+                        {
+                            path: "/ai/chat",
+                            component: aiChat,
+                        },
+                        {
+                            path: "/ai/getEntity",
+                            component: getEntity,
                         },
                     ]
                 },

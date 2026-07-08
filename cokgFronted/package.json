@@ -19,11 +19,15 @@
     "axios": "^1.13.2",
     "echarts": "^6.0.0",
     "element-plus": "^2.13.0",
+    "markdown-it": "^14.2.0",
     "vue": "^3.5.25",
-    "vue-router": "^4.6.4"
+    "vue-router": "^4.6.4",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@tsconfig/node24": "^24.0.3",
+    "@types/dompurify": "^3.2.0",
+    "@types/marked": "^6.0.0",
     "@types/node": "^24.10.1",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/eslint-config-typescript": "^14.6.0",

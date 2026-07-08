@@ -10,18 +10,15 @@
       >
         添加知识图谱
       </el-button>
-      <el-button
-      type="primary"
-      @click="openBatchDialog"
-      :icon="Upload">
+      <el-button type="primary" @click="openBatchDialog" :icon="Upload">
         批量导入
       </el-button>
     </div>
 
-    <BatchAddFileDialog 
-    v-model:visible="batchDialogVisible" 
-    title="批量导入知识图谱"
-    @submit="(files) => handleSubmitFile(files, 'kg')"
+    <BatchAddFileDialog
+      v-model:visible="batchDialogVisible"
+      title="批量导入知识图谱"
+      @submit="(files) => handleSubmitFile(files, 'kg')"
     />
 
     <el-table
@@ -30,13 +27,8 @@
       :header-cell-style="{ background: '#f5f7fa', color: '#606266' }"
       class="admin-table"
     >
-      <el-table-column
-        prop="kgMetaId"
-        label="ID"
-        width="80"
-        sortable
-      >
-    </el-table-column>
+      <el-table-column prop="kgMetaId" label="ID" width="80" sortable>
+      </el-table-column>
       <el-table-column prop="kgName" label="名称" width="150"></el-table-column>
       <!-- <el-table-column prop="description" label="描述" width="200"></el-table-column> -->
       <el-table-column
@@ -49,13 +41,14 @@
         label="更新时间"
         width="150"
       ></el-table-column>
-      <el-table-column label="创建人" prop="createUserId"></el-table-column>
+      <el-table-column label="创建人" prop="createUserName">
+      </el-table-column>
       <el-table-column label="图谱类型" prop="kgType">
         <template #default="{ row }">
           {{ row.kgType === 0 ? "个人" : "部门" }}
         </template>
       </el-table-column>
-      <el-table-column label="所属部门" prop="deptId"></el-table-column>
+      <el-table-column label="所属部门" prop="deptName"></el-table-column>
       <!-- 操作列 -->
       <el-table-column label="操作" width="200">
         <template #default="{ row }">
@@ -79,6 +72,8 @@
         </template>
       </el-table-column>
     </el-table>
+
+    
 
     <el-dialog
       v-model="addKGVisible"
@@ -135,7 +130,7 @@
 </template>
 
 <script setup lang="ts">
-import { getKGList, deleteKG, addKG, updateKG} from "@/utils/kgUtil";
+import { getKGList, deleteKG, addKG, updateKG } from "@/utils/kgUtil";
 import { getDeptList } from "@/utils/deptUtil";
 import { onMounted, ref } from "vue";
 import { Plus, Delete, Check, Edit, Upload } from "@element-plus/icons-vue";
@@ -161,7 +156,6 @@ const updateKGForm = ref<updateKGForm>({
   kgName: "",
   kgType: null,
   deptId: null,
-
 });
 
 const addKGForm = ref<submitKGForm>({
@@ -172,7 +166,6 @@ const addKGForm = ref<submitKGForm>({
 });
 
 const deptOptions = ref<options[]>([]);
-
 
 function openBatchDialog() {
   batchDialogVisible.value = true;
@@ -258,7 +251,6 @@ async function handleDeleteKG(kgMetaId: number) {
       });
     }
 
-
     // 刷新列表
     const kgListData = await getKGList();
     kgList.value = kgListData;
@@ -281,7 +273,7 @@ async function handleDeleteKG(kgMetaId: number) {
 //   await batchAdd(formData);
 
 //   window.location.reload();
-  
+
 // }
 
 onMounted(async () => {

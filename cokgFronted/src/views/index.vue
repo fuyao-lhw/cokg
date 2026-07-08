@@ -13,12 +13,12 @@
             <span>去首页</span>
           </div>
         </router-link>
-        <!-- <router-link to="/test">
+        <router-link to="/test">
           <div class="toIndex">
             <el-icon><HomeFilled /></el-icon>
             <span>测试</span>
           </div>
-        </router-link> -->
+        </router-link>
         <div class="header-right">
           <el-button @click="handleAdminClick">管理员控制台</el-button>
           <userShow />
@@ -45,6 +45,31 @@
                     <span>
                       <router-link to="/graph/list">所有图谱</router-link>
                     </span>
+                  </template>
+                </el-menu-item>
+              </el-sub-menu>
+              <el-sub-menu index="/ai">
+                <template #title>
+                  <el-icon></el-icon>
+                  <span class="aside-title">
+                    <router-link to="/ai">AI模块</router-link>
+                  </span>
+                </template>
+                <el-menu-item>
+                  <template #title>
+                    <el-icon></el-icon>
+                    <span>
+                      <router-link to="/ai/chat">AI聊天</router-link>
+                    </span>
+                  </template>
+                </el-menu-item>
+                <el-menu-item>
+                  <template #title>
+                    <el-icon></el-icon>
+                    <span>
+                      <router-link to="/ai/getEntity">实体识别</router-link>
+                    </span>
+
                   </template>
                 </el-menu-item>
               </el-sub-menu>
