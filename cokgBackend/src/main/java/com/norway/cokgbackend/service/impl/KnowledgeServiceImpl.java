@@ -2,6 +2,8 @@ package com.norway.cokgbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.norway.cokgbackend.enums.ResultCodeEnum;
+import com.norway.cokgbackend.mapper.DeptMapper;
+import com.norway.cokgbackend.mapper.entity.DeptEntity;
 import com.norway.cokgbackend.mapper.entity.knowledge.KnowledgeNodeEntity;
 import com.norway.cokgbackend.mapper.entity.knowledge.KnowledgeRelationEntity;
 import com.norway.cokgbackend.mapper.knowledge.KnowledgeMetaMapper;
@@ -16,12 +18,15 @@ import com.norway.cokgbackend.model.params.knowledge.KnowledgeParam;
 import com.norway.cokgbackend.model.params.knowledge.KnowledgeRelationParam;
 import com.norway.cokgbackend.service.KnowledgeService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.norway.cokgbackend.model.vo.knowledge.listVO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Description: TODO
@@ -42,16 +47,35 @@ public class KnowledgeServiceImpl implements KnowledgeService {
     private KnowledgeRelationMapper relationMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private DeptMapper deptMapper;
 
 
     @Override
     public Result list() {
 
-        List<KnowledgeMetaEntity> knowledgeMetaEntityList = metaMapper.selectList(new QueryWrapper<KnowledgeMetaEntity>()
-                .eq("is_deleted", 0));
+        List<KnowledgeMetaEntity> knowledgeMetaEntityList = metaMapper.selectList(
+                new QueryWrapper<KnowledgeMetaEntity>()
+                        .eq("is_deleted", 0));
+
+        List<listVO> kgList = knowledgeMetaEntityList.stream().map(
+                meta -> {
+                    listVO vo = new listVO();
+                    BeanUtils.copyProperties(meta, vo);
+                    vo.setCreateUserName(userMapper.selectOne(
+                            new QueryWrapper<UserEntity>()
+                                    .eq("user_id", meta.getCreateUserId())
+                    ).getName());
+                    vo.setDeptName(deptMapper.selectOne(
+                            new QueryWrapper<DeptEntity>()
+                                    .eq("dept_id", meta.getDeptId())
+                    ).getName());
+                    return vo;
+                }
+        ).toList();
 
 
-        return Result.success(knowledgeMetaEntityList);
+        return Result.success(kgList);
     }
 
     @Override
@@ -165,7 +189,6 @@ public class KnowledgeServiceImpl implements KnowledgeService {
         knowledgeNodeEntity.setNodeName(addKnowledgeNodeParam.getNodeName());
         knowledgeNodeEntity.setNodeType(addKnowledgeNodeParam.getNodeType());
         knowledgeNodeEntity.setNodeAttr(addKnowledgeNodeParam.getNodeAttr());
-
 
 
         Long userId = userMapper.selectOne(new QueryWrapper<UserEntity>().eq("code", addKnowledgeNodeParam.getCreateUserCode())).getUserId();

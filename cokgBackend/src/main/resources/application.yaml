@@ -1,9 +1,24 @@
 spring:
-  name: experience
+  name: cokg
   datasource:
     url: jdbc:mysql://localhost:3306/cokg?useSSL=false&serverTimezone=UTC
     username: root
     password: lhw050727
+  data:
+    redis:
+      host: 0.0.0.0
+      port: 6379
+#      password: 123456
+      database: 0
+      timeout: 1000
+      lettuce:
+        pool:
+          max-active: 8
+          max-wait: 100
+          max-idle: 8
+          min-idle: 0
+
+
 
 jwt:
   issuer: "cokg"
@@ -11,3 +26,29 @@ jwt:
 
 node:
   coefficient: 1
+
+
+langchain4j:
+  open-ai:
+    chat-model:
+      base-url: https://ark.cn-beijing.volces.com/api/v3
+      api-key: ark-92ed33bd-9178-40e1-a104-fb06b37c6753-755c4
+      model-name: ep-20260519190552-5t6rn
+      log-requests: true
+      log-responses: true
+    streaming-chat-model:
+      base-url: https://ark.cn-beijing.volces.com/api/v3
+      api-key: ark-92ed33bd-9178-40e1-a104-fb06b37c6753-755c4
+      model-name: ep-20260519190552-5t6rn
+      log-requests: true
+      log-responses: true
+
+
+logging:
+  level:
+    # 1. 只开启 langchain4j 框架的关键日志
+    dev.langchain4j: DEBUG
+    # 2. （推荐）精准开启 HTTP 请求响应的详细日志
+    dev.langchain4j.http.client.log: DEBUG
+    # 3. （高级）进一步调试，开启模型层日志
+    dev.langchain4j.model.openai: TRACE

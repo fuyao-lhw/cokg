@@ -35,6 +35,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                         "/user/login", // 登录接口
                         "/user/register", // 注册接口
                         "/user/check_auth", // 校验权限接口
+//                        "/ai/**",  // AI接口
                         "/graph/**"  // 所有图数据接口
                 );
     }
